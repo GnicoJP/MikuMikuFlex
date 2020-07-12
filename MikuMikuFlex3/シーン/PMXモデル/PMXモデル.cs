@@ -11,6 +11,8 @@ using SharpDX.DXGI;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using MikuMikuFlex3.Utility;
+using SharpDX.Text;
+using System.Text;
 
 #pragma warning disable 0649
 
@@ -60,7 +62,10 @@ namespace MikuMikuFlex3
 
         private bool _材質描画を解放する;
 
-
+        static PMXモデル()
+        {
+            System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
         // 生成と終了
 
