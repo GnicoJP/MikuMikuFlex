@@ -28,20 +28,82 @@ namespace MikuMikuFlex3
 
         public シーン( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
         {
-            this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
+            this._D3DDevice = d3dDevice;
+            this.スワップチェーンに依存するリソースを作成する( d3dDevice, depthStencil, renderTarget );
             this.パスリスト = new List<パス>();
-
-            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
-            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
         }
 
         public virtual void Dispose()
         {
+            this.カメラリスト = null;      // Dispose不要
+            this.選択中のカメラ = null;    //
+            this.照明リスト = null;        //
+
+            this.スワップチェーンに依存するリソースを解放する();
+
+            foreach( var pass in this.パスリスト )
+                pass.Dispose();
+            this.パスリスト = null;
+
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
 
+
+            this._D3DDevice = null;     // Dispose はしない
+        }
+
+        public void スワップチェーンに依存するリソースを作成する( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
+        {
+            this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
+
+            this._既定のDepthStencil = depthStencil;
+            this._既定のRenderTarget = renderTarget;
+            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
+            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
+
+            foreach( var pass in this.パスリスト )
+                this._リソースをバインドする( pass );
+        }
+
+        public void スワップチェーンに依存するリソースを解放する()
+        {
+            foreach( var pass in this.パスリスト )
+                this._リソースを解放する( pass );
+
+            this._既定のDepthStencil = null;   // Dispose はしない
+            this._既定のRenderTarget = null;   // Dispose はしない
             this._既定のDepthStencilView?.Dispose();
             this._既定のRenderTargetView?.Dispose();
+        }
+
+
+        public void 追加する( パス pass )
+        {
+            this.パスリスト.Add( pass );
+
+            this._リソースをバインドする( pass );
+        }
+
+        public void 追加する( PMXモデル model )
+        {
+            var modelPass = new PMXモデルパス( model );
+            this.追加する( modelPass );
+        }
+
+        public void 追加する( Effekseer effekseer )
+        {
+            var effekseerPass = new Effekseerパス( effekseer );
+            this.追加する( effekseerPass );
+        }
+
+        public void 追加する( カメラ camera )
+        {
+            this.カメラリスト.Add( camera );
+        }
+
+        public void 追加する( 照明 light )
+        {
+            this.照明リスト.Add( light );
         }
 
 
@@ -60,27 +122,27 @@ namespace MikuMikuFlex3
             return tex2d;
         }
 
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Color4 背景色 )
+
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc )
         {
-            d3ddc.ClearRenderTargetView( this._既定のRenderTargetView, 背景色 );
-            d3ddc.ClearDepthStencilView( this._既定のDepthStencilView, DepthStencilClearFlags.Depth, 1f, 0 );
-
-
             // カメラを進行する。
 
-            if( null == this.選択中のカメラ )
-                this.選択中のカメラ = this.カメラリスト[ 0 ];
+            if( 0 == this.カメラリスト.Count )
+                throw new Exception( "シーンにカメラが設定されていません。" );
+            if( 0 == this.照明リスト.Count )
+                throw new Exception( "シーンに照明が設定されていません。" );
 
+            this.選択中のカメラ = this.カメラリスト[ 0 ];
             this.選択中のカメラ.更新する( 現在時刻sec );
 
 
             // GlobalParameters の設定（シーン単位）
 
-            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー行列を取得する();
+            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー変換行列;
             this._GlobalParameters.ViewMatrix.Transpose();
-            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影行列を取得する();
+            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影変換行列;
             this._GlobalParameters.ProjectionMatrix.Transpose();
-            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.位置, 0f );
+            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.カメラ位置, 0f );
             this._GlobalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
 
 
@@ -98,49 +160,66 @@ namespace MikuMikuFlex3
             }
 
 
+            // DeviceContext の設定とバックアップ。
+
+            var orgRasterizerState = d3ddc.Rasterizer.State;
+            var orgBlendState = d3ddc.OutputMerger.BlendState;
+
+
             // リストの先頭から順番にパスを描画。
 
             for( int i = 0; i < this.パスリスト.Count; i++ )
             {
                 this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, this._GlobalParameters );
             }
-        }
 
-        public void 追加する( PMXモデル model )
-        {
-            var modelPass = new オブジェクトパス( model );
-            this.追加する( modelPass );
-        }
 
-        public void 追加する( パス pass )
-        {
-            this.パスリスト.Add( pass );
+            // DeviceContext の復元。
 
-            if( pass is オブジェクトパス objPass )
-            {
-                if( null == objPass.深度ステンシルビュー )
-                    objPass.深度ステンシルビュー = this._既定のDepthStencilView;
-
-                if( 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    objPass.レンダーターゲットビューs[ 0 ] = this._既定のRenderTargetView;
-            }
-        }
-
-        public void 追加する( カメラ camera )
-        {
-            this.カメラリスト.Add( camera );
-        }
-
-        public void 追加する( 照明 light )
-        {
-            this.照明リスト.Add( light );
+            d3ddc.Rasterizer.State = orgRasterizerState;
+            d3ddc.OutputMerger.BlendState = orgBlendState;
         }
 
 
         protected GlobalParameters _GlobalParameters = new GlobalParameters();
 
+        protected Device _D3DDevice;
+
+        protected Texture2D _既定のDepthStencil;
+
+        protected Texture2D _既定のRenderTarget;
+
         protected DepthStencilView _既定のDepthStencilView;
 
         protected RenderTargetView _既定のRenderTargetView;
+
+
+        private void _リソースをバインドする( パス pass )
+        {
+            // PMXモデルの場合、ビューの設定がなければ既定のビューを設定する。
+            if( pass is PMXモデルパス objPass )
+            {
+                if( null == objPass.深度ステンシルビュー || 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    objPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+            }
+            // Effekseerパスの場合、ビューの設定がなければ既定のビューを設定する。
+            else if( pass is Effekseerパス effekseerPass )
+            {
+                if( null == effekseerPass.深度ステンシルビュー || 0 == effekseerPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    effekseerPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+            }
+        }
+
+        private void _リソースを解放する( パス pass )
+        {
+            if( pass is PMXモデルパス objPass )
+            {
+                objPass.リソースを解放する();
+            }
+            else if( pass is Effekseerパス effekseerPass )
+            {
+                effekseerPass.リソースを解放する();
+            }
+        }
     }
 }
