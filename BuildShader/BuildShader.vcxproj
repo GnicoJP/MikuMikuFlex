@@ -11,49 +11,49 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultDomainShader.hlsl">
+    <FxCompile Include="DefaultDomainShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultGeometryShader.hlsl">
+    <FxCompile Include="DefaultGeometryShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultHullShader.hlsl">
+    <FxCompile Include="DefaultHullShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForEdge.hlsl">
+    <FxCompile Include="DefaultPixelShaderForEdge.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForObject.hlsl">
+    <FxCompile Include="DefaultPixelShaderForObject.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultSkinningComputeShader.hlsl">
+    <FxCompile Include="DefaultSkinningComputeShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForEdge.hlsl">
+    <FxCompile Include="DefaultVertexShaderForEdge.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForObject.hlsl">
+    <FxCompile Include="DefaultVertexShaderForObject.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -61,13 +61,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultCONSTANT_HS_OUT.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVS_OUTPUT.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\MaterialTexture.hlsli" />
+    <None Include="DefaultCONSTANT_HS_OUT.hlsli" />
+    <None Include="DefaultVS_OUTPUT.hlsli" />
+    <None Include="MaterialTexture.hlsli" />
     <None Include="GlobalParameters.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Quaternion.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Skinning.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\VS_INPUT.hlsli" />
+    <None Include="Quaternion.hlsli" />
+    <None Include="Skinning.hlsli" />
+    <None Include="VS_INPUT.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
