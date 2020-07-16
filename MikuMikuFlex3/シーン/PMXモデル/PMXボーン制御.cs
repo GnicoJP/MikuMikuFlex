@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpDX;
 
 namespace MikuMikuFlex3
@@ -150,8 +151,8 @@ namespace MikuMikuFlex3
                 Matrix.Translation( this.ローカル位置 );      // 元の位置に戻す
 
             this.モデルポーズ行列 =
-                this.ローカルポーズ行列 *
-                ( this.親ボーン?.モデルポーズ行列 ?? Matrix.Identity );    // 親ボーンがあるなら親ボーンのモデルポーズを反映。
+                this.親ボーン is null ? this.ローカルポーズ行列 : this.ローカルポーズ行列 * this.親ボーン.モデルポーズ行列;
+                // 親ボーンがあるなら親ボーンのモデルポーズを反映。
 
 
             // すべての子ボーンについても更新。

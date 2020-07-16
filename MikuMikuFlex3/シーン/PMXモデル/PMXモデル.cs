@@ -685,7 +685,7 @@ namespace MikuMikuFlex3
         /// <param name="light">モデルに適用する照明。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
         public void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
-        {
+        {   
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
