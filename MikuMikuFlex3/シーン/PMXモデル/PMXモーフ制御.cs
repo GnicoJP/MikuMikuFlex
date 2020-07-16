@@ -23,6 +23,8 @@ namespace MikuMikuFlex3
 
         public float モーフ値 { get; set; }
 
+        public float TranslatedMorphValue { get; set; }
+
         public アニメ変数<float> アニメ変数_モーフ;
 
 
@@ -49,9 +51,9 @@ namespace MikuMikuFlex3
 
         internal void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
         {
-            var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
+            var 現在値 = TranslatedMorphValue + this.アニメ変数_モーフ.更新する( 現在時刻sec );
 
-            this._モーフを適用する( 現在値, PMXモデル, this );
+            this._モーフを適用する( 現在値 > 1 ? 1 : (現在値 < 0 ? 0 : 現在値), PMXモデル, this );
         }
 
         private void _モーフを適用する( float 現在値, PMXモデル PMXモデル, PMXモーフ制御 適用対象モーフ )

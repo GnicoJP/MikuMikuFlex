@@ -724,7 +724,7 @@ namespace MikuMikuFlex3
             foreach( var morph in this.モーフリスト )
                 morph.モーフを適用する( 現在時刻sec, this );
 
-            this._モデルポーズを再計算する();
+            //this._モデルポーズを再計算する();
             //----------------
             #endregion
 

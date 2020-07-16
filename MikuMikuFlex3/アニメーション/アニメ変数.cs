@@ -87,11 +87,9 @@ namespace MikuMikuFlex3
             return this.値;
         }
 
-
+        public bool HasAnimation => !_遷移リスト.IsEmpty;
 
         // private
-
-
         private ConcurrentQueue<アニメ遷移<T>> _遷移リスト = new ConcurrentQueue<アニメ遷移<T>>();
     }
 }

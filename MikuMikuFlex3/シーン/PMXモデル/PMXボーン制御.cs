@@ -56,6 +56,10 @@ namespace MikuMikuFlex3
 
         public アニメ変数<Quaternion> アニメ変数_回転 { get; protected set; }
 
+        public Vector3 TranslatedPosition { get; set; }
+        public Quaternion TranslatedRotation { get; set; }
+
+
 
 
         // 動的情報（出力）
@@ -83,6 +87,8 @@ namespace MikuMikuFlex3
             this.ローカルポーズ行列 = Matrix.Identity;
             this.アニメ変数_移動 = new アニメ変数<Vector3>( Vector3.Zero );
             this.アニメ変数_回転 = new アニメ変数<Quaternion>( Quaternion.Identity );
+            this.TranslatedPosition = Vector3.Zero;
+            this.TranslatedRotation = Quaternion.Identity;
         }
 
         internal void 読み込み後の処理を行う( PMXボーン制御[] 全ボーン )
@@ -129,8 +135,8 @@ namespace MikuMikuFlex3
 
         internal void ボーンモーションを適用する( double 現在時刻sec )
         {
-            this.移動 += this.アニメ変数_移動.更新する( 現在時刻sec );
-            this.回転 *= this.アニメ変数_回転.更新する( 現在時刻sec );
+            this.移動 += this.アニメ変数_移動.HasAnimation ? this.アニメ変数_移動.更新する( 現在時刻sec ) + this.TranslatedPosition : this.TranslatedPosition;
+            this.回転 *= this.アニメ変数_移動.HasAnimation ? this.アニメ変数_回転.更新する( 現在時刻sec ) * this.TranslatedRotation : this.TranslatedRotation;
         }
 
         internal void モデルポーズを計算する()
