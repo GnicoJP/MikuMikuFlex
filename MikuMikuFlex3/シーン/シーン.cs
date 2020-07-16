@@ -76,6 +76,11 @@ namespace MikuMikuFlex3
             this._既定のRenderTargetView?.Dispose();
         }
 
+        public void RemovePass(パス pass)
+        {
+            this.パスリスト.Remove(pass);
+            this._リソースを解放する(pass);
+        }
 
         public void 追加する( パス pass )
         {
@@ -84,10 +89,11 @@ namespace MikuMikuFlex3
             this._リソースをバインドする( pass );
         }
 
-        public void 追加する( PMXモデル model )
+        public PMXモデルパス 追加する( PMXモデル model )
         {
             var modelPass = new PMXモデルパス( model );
             this.追加する( modelPass );
+            return modelPass;
         }
 
         public void 追加する( Effekseer effekseer )
